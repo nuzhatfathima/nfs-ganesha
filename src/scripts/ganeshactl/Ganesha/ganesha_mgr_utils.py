@@ -364,6 +364,17 @@ class AdminInterface():
         msg = reply[1]
         return status, msg
 
+    def get_version(self):
+        method = self.dbusobj.get_dbus_method("get_version",
+                                                       self.dbus_interface)
+        try:
+           reply = method()
+        except dbus.exceptions.DBusException as e:
+           return False, e
+
+        status = reply[0]
+        msg = reply[1]
+        return status, msg
 
 IDMapper = namedtuple('IDMapper',
                      ['Name',

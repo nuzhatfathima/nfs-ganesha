@@ -590,6 +590,40 @@ static struct gsh_dbus_method method_trim_status = {
 		 END_ARG_LIST}
 };
 
+/**
+ * @brief Dbus method for displaying running nfs ganesha version
+ *
+ * @param[in]  args  Unused
+ * @param[out] reply 
+ */
+
+static bool admin_dbus_get_version(DBusMessageIter *args,
+				DBusMessage *reply,
+				DBusError *error)
+{
+	char *msg = "Ganesha version";
+	bool success = true;
+	DBusMessageIter iter;
+
+	/* Get the ganesha version from macro GANESHA_VERSION in config.h */
+	msg = GANESHA_VERSION;
+	dbus_message_iter_init_append(reply, &iter);
+	if (args != NULL) {
+		msg = "Version takes no arguments.";
+		success = false;
+		LogWarn(COMPONENT_DBUS, "%s", msg);
+	}
+
+	dbus_status_reply(&iter, success, msg);
+	return success;
+}
+
+static struct gsh_dbus_method method_get_version = {
+	.name = "get_version",
+	.method = admin_dbus_get_version,
+	.args = {MESSAGE_REPLY,
+		 END_ARG_LIST}
+};
 
 static struct gsh_dbus_method *admin_methods[] = {
 	&method_shutdown,
@@ -605,6 +639,7 @@ static struct gsh_dbus_method *admin_methods[] = {
 	&method_trim_disable,
 	&method_trim_call,
 	&method_trim_status,
+        &method_get_version,
 	NULL
 };
 
